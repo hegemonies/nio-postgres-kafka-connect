@@ -15,7 +15,7 @@ class ConnectorMetrics(
     private val outboxMetaRepository: OutboxMetaRepository
 ) {
 
-    private val lastIdStaticCounter by lazy {
+    init {
         meterRegistry.gauge(
             LAST_ID_METRIC_NAME,
             AtomicLong()
@@ -41,8 +41,8 @@ class ConnectorMetrics(
     }
 
     private companion object {
-        const val LAST_ID_METRIC_NAME = "nio-connector-last-id"
-        const val HANDLE_MESSAGE_METRIC_NAME = "nio-connector-handle-message"
-        const val MESSAGE_COUNTER_METRIC_NAME = "nio-connector-message-counter"
+        const val LAST_ID_METRIC_NAME = "nio_connector_last_id"
+        const val HANDLE_MESSAGE_METRIC_NAME = "nio_connector_handle_message"
+        const val MESSAGE_COUNTER_METRIC_NAME = "nio_connector_message_counter"
     }
 }
