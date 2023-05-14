@@ -11,6 +11,5 @@ services:
       DATABASE_USERNAME: connect
       DATABASE_PASSWORD: connect
       SPRING_KAFKA_BOOTSTRAP-SERVERS: localhost:9092
-      KAFKA-CONNECT_TOPIC: test-connect
     ports:
       - "8080:8080"
