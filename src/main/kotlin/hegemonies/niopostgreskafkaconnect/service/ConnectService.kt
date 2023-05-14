@@ -44,6 +44,8 @@ class ConnectService(
     private suspend fun handleMessage(message: OutboxMessage) {
         val elapsed = measureTime {
             transactionalOperator.executeAndAwait {
+                message.id ?: throw RuntimeException("Failed to update outbox_meta set lastId=null")
+                blockLastId(message.id)
                 sendMessageToKafka(message)
                 updateLastId(message.id)
             }
@@ -57,8 +59,16 @@ class ConnectService(
         kafkaTemplate.send(message.topic, message.key, message.message)
     }
 
-    private suspend fun updateLastId(lastId: Long?) {
-        lastId ?: throw RuntimeException("Failed to update outbox_meta set lastId=null")
+    private suspend fun blockLastId(lastId: Long) {
+        val lastIdInDb = outboxMetaRepository.blockLastId()
+        if (lastId != lastIdInDb) {
+            throw RuntimeException(
+                "LastId=$lastIdInDb from database and current handling messageId=$lastId are not valid"
+            )
+        }
+    }
+
+    private suspend fun updateLastId(lastId: Long) {
         outboxMetaRepository.update(lastId)
     }
 
