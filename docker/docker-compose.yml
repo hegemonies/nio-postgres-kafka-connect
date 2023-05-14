@@ -5,5 +5,12 @@ services:
     restart: always
     environment:
       JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -XX:+ExitOnOutOfMemoryError -Xmx128m
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      DATABASE_NAME: connect
+      DATABASE_USERNAME: connect
+      DATABASE_PASSWORD: connect
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: localhost:9092
+      KAFKA-CONNECT_TOPIC: test-connect
     ports:
       - "8080:8080"
