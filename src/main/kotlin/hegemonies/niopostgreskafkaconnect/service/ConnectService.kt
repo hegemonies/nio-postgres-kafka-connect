@@ -30,7 +30,7 @@ class ConnectService(
 
         outboxRepository.findAllByIdThatBigger(lastId)
             .collect { message ->
-                logger.info { "Message=$message" }
+                logger.debug { "Message=$message" }
                 handleMessage(message)
             }
     }
