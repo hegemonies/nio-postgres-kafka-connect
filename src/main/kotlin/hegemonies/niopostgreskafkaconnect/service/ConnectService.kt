@@ -61,7 +61,7 @@ class ConnectService(
 
     private suspend fun blockLastId(lastId: Long) {
         val lastIdInDb = outboxMetaRepository.blockLastId()
-        if (lastId != lastIdInDb) {
+        if (lastId != lastIdInDb + 1) {
             throw RuntimeException(
                 "LastId=$lastIdInDb from database and current handling messageId=$lastId are not valid"
             )
