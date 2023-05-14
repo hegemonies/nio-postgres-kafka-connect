@@ -1,0 +1,9 @@
+services:
+  connector:
+    image: hegemonies/nio-postgres-kafka-connect:0.0.1
+    container_name: nio-postgres-kafka-connect
+    restart: always
+    environment:
+      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -XX:+ExitOnOutOfMemoryError -Xmx128m
+    ports:
+      - "8080:8080"
