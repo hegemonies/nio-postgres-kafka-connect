@@ -4,7 +4,7 @@ services:
     container_name: nio-postgres-kafka-connect
     restart: always
     environment:
-      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -XX:+ExitOnOutOfMemoryError -Xmx128m
+      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -XX:+ExitOnOutOfMemoryError -Xmx64m -Xms64m
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       DATABASE_NAME: connect
