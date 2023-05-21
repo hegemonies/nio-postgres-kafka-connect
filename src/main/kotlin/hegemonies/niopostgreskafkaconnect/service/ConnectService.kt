@@ -11,7 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.reactive.TransactionalOperator
 import org.springframework.transaction.reactive.executeAndAwait
-import java.lang.RuntimeException
+import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
@@ -56,7 +56,13 @@ class ConnectService(
     }
 
     private suspend fun sendMessageToKafka(message: OutboxMessage) {
-        kafkaTemplate.send(message.topic, message.key, message.message)
+        val result = if (message.partition != null) {
+            kafkaTemplate.send(message.topic, message.partition, message.key, message.message)
+        } else {
+            kafkaTemplate.send(message.topic, message.key, message.message)
+        }
+
+        result.get(1, TimeUnit.SECONDS)
     }
 
     private suspend fun blockLastId(lastId: Long) {
