@@ -9,9 +9,10 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
 
     id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
-    id("com.google.cloud.tools.jib") version "3.3.1"
+    id("com.google.cloud.tools.jib") version "3.3.2"
 }
 
 group = "hegemonies"
@@ -31,6 +32,7 @@ dependencies {
 
     // json
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1")
 
     // kotlin
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")

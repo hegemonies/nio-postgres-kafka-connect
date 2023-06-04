@@ -20,9 +20,9 @@ import kotlin.time.measureTime
 class ConnectService(
     private val outboxRepository: OutboxRepository,
     private val outboxMetaRepository: OutboxMetaRepository,
-    private val kafkaTemplate: KafkaTemplate<String, String>,
     private val transactionalOperator: TransactionalOperator,
-    private val connectorMetrics: ConnectorMetrics
+    private val connectorMetrics: ConnectorMetrics,
+    private val producerService: ProducerService
 ) {
 
     suspend fun collect() {
@@ -46,23 +46,13 @@ class ConnectService(
             transactionalOperator.executeAndAwait {
                 message.id ?: throw RuntimeException("Failed to update outbox_meta set lastId=null")
                 blockLastId(message.id)
-                sendMessageToKafka(message)
+                producerService.send(message)
                 updateLastId(message.id)
             }
         }
 
         connectorMetrics.addHandleMessageMetric(elapsed)
         connectorMetrics.incrementMessageCounter()
-    }
-
-    private suspend fun sendMessageToKafka(message: OutboxMessage) {
-        val result = if (message.partition != null) {
-            kafkaTemplate.send(message.topic, message.partition, message.key, message.message)
-        } else {
-            kafkaTemplate.send(message.topic, message.key, message.message)
-        }
-
-        result.get(1, TimeUnit.SECONDS)
     }
 
     private suspend fun blockLastId(lastId: Long) {
