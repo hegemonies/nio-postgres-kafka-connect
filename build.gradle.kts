@@ -1,17 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val coroutineVersion = "1.7.1"
+val coroutineVersion = "1.7.2"
 
 plugins {
-    val kotlinVersion = "1.8.21"
+    val kotlinVersion = "1.9.0"
 
-    id("org.springframework.boot") version "3.1.0"
+    id("org.springframework.boot") version "3.1.1"
     id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
 
-    id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
-    id("com.google.cloud.tools.jib") version "3.3.1"
+    id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
+    id("com.google.cloud.tools.jib") version "3.3.2"
 }
 
 group = "hegemonies"
