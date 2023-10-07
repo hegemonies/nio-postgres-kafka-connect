@@ -6,17 +6,16 @@ import hegemonies.niopostgreskafkaconnect.model.OutboxMeta
 import hegemonies.niopostgreskafkaconnect.repository.OutboxMetaRepository
 import hegemonies.niopostgreskafkaconnect.repository.OutboxRepository
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.future.await
 import mu.KLogging
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.reactive.TransactionalOperator
 import org.springframework.transaction.reactive.executeAndAwait
 import java.util.concurrent.TimeUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @Service
-@OptIn(ExperimentalTime::class)
 class ConnectService(
     private val outboxRepository: OutboxRepository,
     private val outboxMetaRepository: OutboxMetaRepository,
@@ -37,7 +36,7 @@ class ConnectService(
 
     private suspend fun getLastId(): Long {
         val meta = outboxMetaRepository.findAll().toList().firstOrNull()
-            ?: outboxMetaRepository.save(OutboxMeta(0))
+            ?: outboxMetaRepository.save(OutboxMeta(lastId = 0))
         return meta.lastId
     }
 
@@ -62,7 +61,7 @@ class ConnectService(
             kafkaTemplate.send(message.topic, message.key, message.message)
         }
 
-        result.get(1, TimeUnit.SECONDS)
+        result.orTimeout(1, TimeUnit.SECONDS).await()
     }
 
     private suspend fun blockLastId(lastId: Long) {
