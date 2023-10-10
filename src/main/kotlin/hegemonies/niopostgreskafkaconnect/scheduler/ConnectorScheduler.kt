@@ -13,9 +13,9 @@ class ConnectorScheduler(
 
     @Scheduled(cron = "0/20 * * * * *") // every minute
     fun handle() = runBlocking {
-        logger.info { "Start connector scheduler" }
+        logger.debug { "Start connector scheduler" }
         connectorService.collect()
-        logger.info { "Finish connector scheduler" }
+        logger.debug { "Finish connector scheduler" }
     }
 
     private companion object : KLogging()
