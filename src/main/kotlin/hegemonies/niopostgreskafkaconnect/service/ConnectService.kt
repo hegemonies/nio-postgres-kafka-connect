@@ -26,6 +26,7 @@ class ConnectService(
 
     suspend fun collect() {
         val lastId = getLastId()
+        logger.debug { "Find last_id = $lastId" }
 
         outboxRepository.findAllByIdThatBigger(lastId)
             .collect { message ->
@@ -55,6 +56,7 @@ class ConnectService(
     }
 
     private suspend fun sendMessageToKafka(message: OutboxMessage) {
+        logger.debug { "Send message to kafka, id = ${message.id}" }
         val result = if (message.partition != null) {
             kafkaTemplate.send(message.topic, message.partition, message.key, message.message)
         } else {
@@ -65,6 +67,7 @@ class ConnectService(
     }
 
     private suspend fun blockLastId(lastId: Long) {
+        logger.debug { "Block last_id = $lastId" }
         val lastIdInDb = outboxMetaRepository.blockLastId()
         if (lastId != lastIdInDb + 1) {
             throw RuntimeException(
@@ -74,6 +77,7 @@ class ConnectService(
     }
 
     private suspend fun updateLastId(lastId: Long) {
+        logger.debug { "Update last_id = $lastId" }
         outboxMetaRepository.update(lastId)
     }
 
