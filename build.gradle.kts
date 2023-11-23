@@ -3,19 +3,19 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val coroutineVersion = "1.7.3"
 
 plugins {
-    val kotlinVersion = "1.9.10"
+    val kotlinVersion = "1.9.20"
 
-    id("org.springframework.boot") version "3.1.4"
-    id("io.spring.dependency-management") version "1.1.3"
+    id("org.springframework.boot") version "3.2.0"
+    id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
 
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
     id("com.google.cloud.tools.jib") version "3.4.0"
 }
 
 group = "hegemonies"
-version = "0.0.1"
+version = "1.0.0"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -76,7 +76,7 @@ tasks.withType<Test> {
 
 jib {
     from {
-        image = "azul/zulu-openjdk:21-latest"
+        image = "bellsoft/liberica-runtime-container:jre-21-slim-glibc"
     }
 
     to {

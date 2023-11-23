@@ -1,6 +1,6 @@
 services:
   connector:
-    image: hegemonies/nio-postgres-kafka-connect:0.0.1
+    image: hegemonies/nio-postgres-kafka-connect:1.0.0
     container_name: nio-postgres-kafka-connect
     restart: always
     environment:
