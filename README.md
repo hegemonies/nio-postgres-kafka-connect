@@ -6,13 +6,13 @@
 
 ## Features
 
-### 1. Non-Blocking Database and Kafka Connection
+### 1. Non-blocking Database and Kafka Connection
 
 The connector employs non-blocking connections to both PostgreSQL and Kafka, ensuring optimal performance and responsiveness.
 
 ### 2. Low Memory Footprint
 
-`nio-postgres-kafka-connect` is crafted with efficiency in mind, minimizing memory usage while handling large volumes of events.
+`nio-postgres-kafka-connect` is crafted with efficiency in mind, minimizing memory usage while handling large volumes of events. Only **64mb** for heap.
 
 ### 3. Single Database and Kafka Connection
 
@@ -33,6 +33,10 @@ Built on the robust Spring framework, this connector inherits the advantages of 
 ## Getting Started
 
 To get started with `nio-postgres-kafka-connect`, follow these simple steps:
+
+### First of all
+
+Run manually migration from `sql` folder to create `outbox` and `outbox_meta` tables.
 
 ### Manually
 
@@ -79,6 +83,14 @@ To get started with `nio-postgres-kafka-connect`, follow these simple steps:
    ```
 
 Now, you're all set to seamlessly stream events from PostgreSQL to Kafka using the outbox pattern.
+
+## Monitoring
+
+You can use custom grafana dashboard from `monitoring` folder. 
+
+How dashboard looks:
+
+![grafana dashboard](images/grafana-dashboard.png)
 
 ## Contributing
 
