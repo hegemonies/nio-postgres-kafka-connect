@@ -3,14 +3,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val coroutineVersion = "1.7.3"
 
 plugins {
-    val kotlinVersion = "1.9.20"
+    val kotlinVersion = "1.9.21"
 
     id("org.springframework.boot") version "3.2.0"
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
 
-    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
+    id("org.jlleitschuh.gradle.ktlint") version "12.0.2"
     id("com.google.cloud.tools.jib") version "3.4.0"
 }
 

@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component
 
 @Component
 class ConnectorScheduler(
-    private val connectorService: ConnectService
+    private val connectorService: ConnectService,
 ) {
-
     @Scheduled(cron = "0/20 * * * * *") // every minute
-    fun handle() = runBlocking {
-        logger.debug { "Start connector scheduler" }
-        connectorService.collect()
-        logger.debug { "Finish connector scheduler" }
-    }
+    fun handle() =
+        runBlocking {
+            logger.debug { "Start connector scheduler" }
+            connectorService.collect()
+            logger.debug { "Finish connector scheduler" }
+        }
 
     private companion object : KLogging()
 }

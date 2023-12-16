@@ -13,5 +13,5 @@ data class OutboxMessage(
     val topic: String,
     val partition: Int?,
     val key: String,
-    val message: String
+    val message: String,
 )

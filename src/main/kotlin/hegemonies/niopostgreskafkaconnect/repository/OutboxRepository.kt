@@ -7,7 +7,6 @@ import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 
 interface OutboxRepository : CoroutineCrudRepository<OutboxMessage, Long> {
-
     @Query("SELECT * FROM ${TableName.OUTBOX} WHERE id > :lastId ORDER BY id")
     fun findAllByIdThatBigger(lastId: Long): Flow<OutboxMessage>
 }

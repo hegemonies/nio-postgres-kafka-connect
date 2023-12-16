@@ -8,21 +8,19 @@ import mu.KLogging
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
-import java.util.concurrent.atomic.AtomicLong
 import kotlin.time.Duration
 import kotlin.time.toJavaDuration
 
 @Component
 class ConnectorMetrics(
     private val meterRegistry: MeterRegistry,
-    private val outboxMetaRepository: OutboxMetaRepository
+    private val outboxMetaRepository: OutboxMetaRepository,
 ) {
-
     @EventListener(ApplicationReadyEvent::class)
     fun init() {
         meterRegistry.gauge(
             LAST_ID_METRIC_NAME,
-            0L
+            0L,
         ) {
             runCatching {
                 runBlocking { (outboxMetaRepository.findAll().toList().firstOrNull()?.lastId ?: 0).toDouble() }

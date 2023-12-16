@@ -5,5 +5,5 @@ import org.springframework.data.relational.core.mapping.Table
 
 @Table(name = TableName.OUTBOX_META)
 data class OutboxMeta(
-    val lastId: Long
+    val lastId: Long,
 )

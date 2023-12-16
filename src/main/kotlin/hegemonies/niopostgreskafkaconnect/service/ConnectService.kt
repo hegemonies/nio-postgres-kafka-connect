@@ -21,9 +21,8 @@ class ConnectService(
     private val outboxMetaRepository: OutboxMetaRepository,
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val transactionalOperator: TransactionalOperator,
-    private val connectorMetrics: ConnectorMetrics
+    private val connectorMetrics: ConnectorMetrics,
 ) {
-
     suspend fun collect() {
         val lastId = getLastId()
         logger.debug { "Find last_id = $lastId" }
@@ -36,20 +35,22 @@ class ConnectService(
     }
 
     private suspend fun getLastId(): Long {
-        val meta = outboxMetaRepository.findAll().toList().firstOrNull()
-            ?: outboxMetaRepository.save(OutboxMeta(lastId = 0))
+        val meta =
+            outboxMetaRepository.findAll().toList().firstOrNull()
+                ?: outboxMetaRepository.save(OutboxMeta(lastId = 0))
         return meta.lastId
     }
 
     private suspend fun handleMessage(message: OutboxMessage) {
-        val elapsed = measureTime {
-            transactionalOperator.executeAndAwait {
-                message.id ?: throw RuntimeException("Failed to update outbox_meta set lastId=null")
-                blockLastId(message.id)
-                sendMessageToKafka(message)
-                updateLastId(message.id)
+        val elapsed =
+            measureTime {
+                transactionalOperator.executeAndAwait {
+                    message.id ?: throw RuntimeException("Failed to update outbox_meta set lastId=null")
+                    blockLastId(message.id)
+                    sendMessageToKafka(message)
+                    updateLastId(message.id)
+                }
             }
-        }
 
         connectorMetrics.addHandleMessageMetric(elapsed)
         connectorMetrics.incrementMessageCounter()
@@ -57,11 +58,12 @@ class ConnectService(
 
     private suspend fun sendMessageToKafka(message: OutboxMessage) {
         logger.debug { "Send message to kafka, id = ${message.id}" }
-        val result = if (message.partition != null) {
-            kafkaTemplate.send(message.topic, message.partition, message.key, message.message)
-        } else {
-            kafkaTemplate.send(message.topic, message.key, message.message)
-        }
+        val result =
+            if (message.partition != null) {
+                kafkaTemplate.send(message.topic, message.partition, message.key, message.message)
+            } else {
+                kafkaTemplate.send(message.topic, message.key, message.message)
+            }
 
         result.orTimeout(1, TimeUnit.SECONDS).await()
     }
@@ -71,7 +73,7 @@ class ConnectService(
         val lastIdInDb = outboxMetaRepository.blockLastId()
         if (lastId != lastIdInDb + 1) {
             throw RuntimeException(
-                "LastId=$lastIdInDb from database and current handling messageId=$lastId are not valid"
+                "LastId=$lastIdInDb from database and current handling messageId=$lastId are not valid",
             )
         }
     }
