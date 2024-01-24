@@ -1,5 +1,6 @@
 package hegemonies.niopostgreskafkaconnect.service
 
+import hegemonies.niopostgreskafkaconnect.configuration.properties.ConnectorProperties
 import hegemonies.niopostgreskafkaconnect.metrics.ConnectorMetrics
 import hegemonies.niopostgreskafkaconnect.model.OutboxMessage
 import hegemonies.niopostgreskafkaconnect.model.OutboxMeta
@@ -22,6 +23,8 @@ class ConnectService(
     private val kafkaTemplate: KafkaTemplate<String, String>,
     private val transactionalOperator: TransactionalOperator,
     private val connectorMetrics: ConnectorMetrics,
+    private val connectorProperties: ConnectorProperties,
+    private val purgeService: PurgeService,
 ) {
     suspend fun collect() {
         val lastId = getLastId()
@@ -49,6 +52,7 @@ class ConnectService(
                     blockLastId(message.id)
                     sendMessageToKafka(message)
                     updateLastId(message.id)
+                    purgeMessage(message.id)
                 }
             }
 
@@ -81,6 +85,13 @@ class ConnectService(
     private suspend fun updateLastId(lastId: Long) {
         logger.debug { "Update last_id = $lastId" }
         outboxMetaRepository.update(lastId)
+    }
+
+    private suspend fun purgeMessage(id: Long) {
+        val isNeedPurge =
+            connectorProperties.purgePolicy?.enabled == true &&
+                connectorProperties.purgePolicy.purgeAfterSendPolicy?.enabled == true
+        if (isNeedPurge) purgeService.purgeById(id)
     }
 
     private companion object : KLogging()
