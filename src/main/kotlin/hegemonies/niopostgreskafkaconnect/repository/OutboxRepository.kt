@@ -11,5 +11,6 @@ interface OutboxRepository : CoroutineCrudRepository<OutboxMessage, Long> {
     @Query("SELECT * FROM ${TableName.OUTBOX} WHERE id > :lastId ORDER BY id")
     fun findAllByIdThatBigger(lastId: Long): Flow<OutboxMessage>
 
+    @Query("DELETE FROM ${TableName.OUTBOX} WHERE created_at < :createdAt")
     suspend fun deleteAllBeforeCreatedAt(createdAt: Instant): Int
 }

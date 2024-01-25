@@ -11,10 +11,10 @@ class PurgeScheduler(
     private val connectorProperties: ConnectorProperties,
     private val purgeService: PurgeService,
 ) {
-    @Scheduled(cron = "\${connector.purge-policy.purge-by-scheduler-policy.period}")
+    @Scheduled(cron = "\${connector.purge-policy.purge-by-scheduler-policy.period:0 */10 * * * *}")
     fun purge() =
         runBlocking {
-            if (connectorProperties.purgePolicy.enabled) {
+            if (connectorProperties.purgePolicy?.enabled == true) {
                 purgeService.purge()
             }
         }
